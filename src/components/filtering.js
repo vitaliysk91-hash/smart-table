@@ -1,14 +1,14 @@
 export function initFiltering(elements) {
-    const updateIndexes = (elements, indexes) => {
+    const updateIndexes = (filterElements, indexes) => {
         Object.keys(indexes).forEach(elementName => {
-            elements[elementName].append(
-                ...Object.values(indexes[elementName]).map(name => {
-                    const option = document.createElement('option');
-                    option.value = name;
-                    option.textContent = name;
-                    return option;
-                })
-            );
+            const options = Object.values(indexes[elementName]).map(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                return option;
+            });
+
+            filterElements[elementName].append(...options);
         });
     };
 
@@ -27,10 +27,14 @@ export function initFiltering(elements) {
         const filter = {};
 
         Object.keys(elements).forEach(key => {
-            if (elements[key]) {
-                if (['INPUT', 'SELECT'].includes(elements[key].tagName) && elements[key].value) {
-                    filter[`filter[${elements[key].name}]`] = elements[key].value;
-                }
+            const element = elements[key];
+
+            if (
+                element &&
+                ['INPUT', 'SELECT'].includes(element.tagName) &&
+                element.value
+            ) {
+                filter[`filter[${element.name}]`] = element.value;
             }
         });
 
